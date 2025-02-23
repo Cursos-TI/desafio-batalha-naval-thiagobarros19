@@ -43,7 +43,7 @@ int checkShipOverPassLimits(int boardSize, int coordinateX, int coordinateY, int
     return 1;
 }
 
-int setShipOnBoard(int tabuleiro[10][10], int shipPosition[2], int shipSize, int shipVector) {
+int setShipOnBoard(int tabuleiro[10][10], int shipPosition[2], int shipSize, int shipVector, int isDiagonal) {
 
     if (checkShipOverPassLimits(10, shipPosition[0], shipPosition[1], shipSize, shipVector)) {
         printf("Posição inválida. Tente novamente.\n");
@@ -57,9 +57,19 @@ int setShipOnBoard(int tabuleiro[10][10], int shipPosition[2], int shipSize, int
         }
         tabuleiro[shipPosition[0]][shipPosition[1]] = 3;
         if (shipVector == 0){
-            shipPosition[1] = shipPosition[1] + 1;
+            if (isDiagonal == 1) {
+                shipPosition[0] = shipPosition[0] + 1;
+                shipPosition[1] = shipPosition[1] + 1;
+            } else {
+                shipPosition[1] = shipPosition[1] + 1;
+            }
         } else {
-            shipPosition[0] = shipPosition[0] + 1;
+            if (isDiagonal == 1) {
+                shipPosition[0] = shipPosition[0] - 1;
+                shipPosition[1] = shipPosition[1] + 1;
+            } else {
+                shipPosition[0] = shipPosition[0] + 1;
+            }
         }
     }
 
@@ -88,30 +98,50 @@ int main() {
     int shipPosition1[2] = {3,2};
     int shipSize1 = 3;
     int shipVector1 = 0;
+    int isDiagonal1 = 0;
 
-    if (!setShipOnBoard(tabuleiro, shipPosition1, shipSize1, shipVector1)) {
+    if (!setShipOnBoard(tabuleiro, shipPosition1, shipSize1, shipVector1, isDiagonal1)) {
         return 0;
     }
 
     int shipPosition2[2] = {4,5};
     int shipSize2 = 3;
     int shipVector2 = 1;
+    int isDiagonal2 = 0;
 
-    if (!setShipOnBoard(tabuleiro, shipPosition2, shipSize2, shipVector2)) {
+    if (!setShipOnBoard(tabuleiro, shipPosition2, shipSize2, shipVector2, isDiagonal2)) {
         return 0;
     }
-
-    printTabuleiro(tabuleiro);
 
     // Nível Aventureiro - Expansão do Tabuleiro e Posicionamento Diagonal
     // Sugestão: Expanda o tabuleiro para uma matriz 10x10.
     // Sugestão: Posicione quatro navios no tabuleiro, incluindo dois na diagonal.
     // Sugestão: Exiba o tabuleiro completo no console, mostrando 0 para posições vazias e 3 para posições ocupadas.
 
+    int shipPosition3[2] = {0,4};
+    int shipSize3 = 3;
+    int shipVector3 = 0;
+    int isDiagonal3 = 1;
+
+    if (!setShipOnBoard(tabuleiro, shipPosition3, shipSize3, shipVector3, isDiagonal3)) {
+        return 0;
+    }
+
+    int shipPosition4[2] = {7,0};
+    int shipSize4 = 3;
+    int shipVector4 = 1;
+    int isDiagonal4 = 1;
+
+    if (!setShipOnBoard(tabuleiro, shipPosition4, shipSize4, shipVector4, isDiagonal4)) {
+        return 0;
+    }
+
     // Nível Mestre - Habilidades Especiais com Matrizes
     // Sugestão: Crie matrizes para representar habilidades especiais como cone, cruz, e octaedro.
     // Sugestão: Utilize estruturas de repetição aninhadas para preencher as áreas afetadas por essas habilidades no tabuleiro.
     // Sugestão: Exiba o tabuleiro com as áreas afetadas, utilizando 0 para áreas não afetadas e 1 para áreas atingidas.
+
+    printTabuleiro(tabuleiro);
 
     // Exemplos de exibição das habilidades:
     // Exemplo para habilidade em cone:
