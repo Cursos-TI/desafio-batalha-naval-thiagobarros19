@@ -1,10 +1,35 @@
 #include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
 
 // Desafio Batalha Naval - MateCheck
 // Este código inicial serve como base para o desenvolvimento do sistema de Batalha Naval.
 // Siga os comentários para implementar cada parte do desafio.
 
 void printTabuleiro(int tabuleiro[10][10]) {
+    char line[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+    int i, j;
+    int tamanhoTabuleiro = 10;
+
+    printf("-------------------\n");
+    for (i = 0; i < tamanhoTabuleiro; i++) {
+        if (i == 0) {
+            printf("  ");
+        }
+        printf(" %c", line[i]);
+    }
+    printf("\n");
+
+    for (i = 0; i < tamanhoTabuleiro; i++){
+        printf(i < 9 ? " %d" : "%d", i + 1);
+        for (j = 0; j < tamanhoTabuleiro; j++){
+            printf(" %d", tabuleiro[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+void printTabuleiroEspecial(int tabuleiro[10][10]) {
     char line[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
     int i, j;
     int tamanhoTabuleiro = 10;
@@ -76,6 +101,42 @@ int setShipOnBoard(int tabuleiro[10][10], int shipPosition[2], int shipSize, int
     return 1;
 }
 
+void createConeEspecial(int tabuleiro[10][10], int tabuleiroSize, int size, int coordinateX, int coordinateY) {
+    for (int i = coordinateX; i < size + coordinateX; i++){
+        for (int j = 0; j < tabuleiroSize; j++){
+            if (j >= coordinateY - i + coordinateX && j <= coordinateY + i - coordinateX) {
+                tabuleiro[i][j] = 5;
+            }
+        }
+    }
+}
+
+void createCruzEspecial(int tabuleiro[10][10], int tabuleiroSize, int coordinateX, int coordinateY) {
+    for (int i = 0; i < tabuleiroSize; i++){
+        for (int j = 0; j < tabuleiroSize; j++){
+            if (i == coordinateX || j == coordinateY) {
+                tabuleiro[i][j] = 5;
+            }
+        }
+    }
+}
+
+void createOctaedroEspecial(int tabuleiro[10][10], int tabuleiroSize, int octaedroSize, int coordinateX, int coordinateY) {
+    int radius = octaedroSize / 2;
+
+    for (int i = 0; i < tabuleiroSize; i++) {
+        for (int j = 0; j < tabuleiroSize; j++) {
+            int dist = abs(i - coordinateX);
+            if (dist <= radius) {
+                int range = radius - dist;
+                if (j >= coordinateY - range && j <= coordinateY + range) {
+                    tabuleiro[i][j] = 5;
+                }
+            }
+        }
+    }
+}
+
 int main() {
     // Nível Novato - Posicionamento dos Navios
     // Sugestão: Declare uma matriz bidimensional para representar o tabuleiro (Ex: int tabuleiro[5][5];).
@@ -141,7 +202,52 @@ int main() {
     // Sugestão: Utilize estruturas de repetição aninhadas para preencher as áreas afetadas por essas habilidades no tabuleiro.
     // Sugestão: Exiba o tabuleiro com as áreas afetadas, utilizando 0 para áreas não afetadas e 1 para áreas atingidas.
 
-    printTabuleiro(tabuleiro);
+    int tamanhoTabuleiroCone = 10;
+    int tabuleiroCone[tamanhoTabuleiroCone][tamanhoTabuleiroCone];
+
+    for (i = 0; i < tamanhoTabuleiroCone; i++){
+        for (j = 0; j < tamanhoTabuleiroCone; j++){
+            tabuleiroCone[i][j] = 0;
+        }
+    }
+
+    int conePosition[2] = {7,2};
+    int coneSize = 3;
+
+    createConeEspecial(tabuleiroCone, tamanhoTabuleiroCone, coneSize, conePosition[0], conePosition[1]);
+
+    printTabuleiroEspecial(tabuleiroCone);
+
+    int tamanhoTabuleiroCruz = 10;
+    int tabuleiroCruz[tamanhoTabuleiroCruz][tamanhoTabuleiroCruz];
+
+    for (i = 0; i < tamanhoTabuleiroCruz; i++){
+        for (j = 0; j < tamanhoTabuleiroCruz; j++){
+            tabuleiroCruz[i][j] = 0;
+        }
+    }
+
+    int cruzPosition[2] = {1,8};
+
+    createCruzEspecial(tabuleiroCruz, tamanhoTabuleiroCruz, cruzPosition[0], cruzPosition[1]);
+
+    printTabuleiroEspecial(tabuleiroCruz);
+
+    int tamanhoTabuleiroOctaedro = 10;
+    int tabuleiroOctaedro[tamanhoTabuleiroOctaedro][tamanhoTabuleiroOctaedro];
+
+    for (i = 0; i < tamanhoTabuleiroOctaedro; i++){
+        for (j = 0; j < tamanhoTabuleiroOctaedro; j++){
+            tabuleiroOctaedro[i][j] = 0;
+        }
+    }
+
+    int octaedroPosition[2] = {4,4};
+    int octaedroSize = 5;
+
+    createOctaedroEspecial(tabuleiroOctaedro, tamanhoTabuleiroOctaedro, octaedroSize, octaedroPosition[0], octaedroPosition[1]);
+
+    printTabuleiroEspecial(tabuleiroOctaedro);
 
     // Exemplos de exibição das habilidades:
     // Exemplo para habilidade em cone:
@@ -158,6 +264,12 @@ int main() {
     // 0 0 1 0 0
     // 1 1 1 1 1
     // 0 0 1 0 0
+
+
+    createConeEspecial(tabuleiro, tamanhoTabuleiroCone, coneSize, conePosition[0], conePosition[1]);
+    createCruzEspecial(tabuleiro, tamanhoTabuleiroCruz, cruzPosition[0], cruzPosition[1]);
+    createOctaedroEspecial(tabuleiro, tamanhoTabuleiroOctaedro, octaedroSize, octaedroPosition[0], octaedroPosition[1]);
+    printTabuleiro(tabuleiro);
 
     return 0;
 }
